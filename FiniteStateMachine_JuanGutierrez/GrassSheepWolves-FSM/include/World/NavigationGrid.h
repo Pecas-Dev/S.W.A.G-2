@@ -16,7 +16,8 @@ struct Tile
     Color color;
 };
 
-class NavigationGrid {
+class NavigationGrid 
+{
 public:
     NavigationGrid(int width, int height);
     ~NavigationGrid();

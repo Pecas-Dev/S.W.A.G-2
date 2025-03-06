@@ -40,14 +40,14 @@ struct Vector2Equal
 	bool operator()(const Vector2& lhs, const Vector2& rhs) const { return lhs.x == rhs.x && lhs.y == rhs.y; }
 };
 
-class PathFinding {
+class PathFinding 
+{
 public:
 	PathFinding(World* world);
 	~PathFinding();
 
 
 	void DebugDrawPath(const std::vector<Vector2>& path, Color color);
-
 
 	bool HasPath(const Vector2& start, const Vector2& end);
 
@@ -56,7 +56,6 @@ public:
 
 private:
 	World* world;
-
 
 	float CalculateHeuristic(const Vector2& a, const Vector2& b);
 

@@ -7,6 +7,7 @@
 #include <set>
 
 
+// Initializes a new PathFinding instance with a reference to the world
 PathFinding::PathFinding(World* world) : world(world)
 {
 }
@@ -15,37 +16,46 @@ PathFinding::~PathFinding()
 {
 }
 
+// Implements the A* algorithm to find the shortest path between two positions.
 std::vector<Vector2> PathFinding::FindPath(const Vector2& start, const Vector2& end)
 {
+	// If the start and the end are the same, it will return a single point.
 	if (start.x == end.x && start.y == end.y)
 	{
 		return { start };
 	}
 
+	// Nodes that need to be evaluated.
 	std::set<PathNode*, NodeComparator> openSet;
 
+	// Nodes that have already been evaluated.
 	std::unordered_map<Vector2, bool, Vector2Hash, Vector2Equal> closedSet;
 
+	// Tracks all nodes we create. It is also used for cleanup.
 	std::vector<PathNode*> allNodes;
 
+	// Creation of the Start Node.
 	PathNode* startNode = new PathNode
 	{
 		nullptr,
 		start,
 		0.0f,
-		CalculateHeuristic(start, end) 
+		CalculateHeuristic(start, end)
 	};
 
 	allNodes.push_back(startNode);
 	openSet.insert(startNode);
 
+	// Main loop of the A* Pathfinding Algorithm.
 	while (!openSet.empty())
 	{
+		// Gets the node with the lowest fCost.
 		PathNode* current = *openSet.begin();
 		openSet.erase(openSet.begin());
 
 		closedSet[current->position] = true;
 
+		// If the current node is the end node, it will reconstruct the path and return it.
 		if (current->position.x == end.x && current->position.y == end.y)
 		{
 			std::vector<Vector2> path = ReconstructPath(current);
@@ -58,6 +68,7 @@ std::vector<Vector2> PathFinding::FindPath(const Vector2& start, const Vector2& 
 			return path;
 		}
 
+		// Iterates and check through all the neighbors of the current node.
 		for (const Vector2& neighborPos : GetNeighbors(current->position))
 		{
 			if (closedSet.find(neighborPos) != closedSet.end())
@@ -65,8 +76,10 @@ std::vector<Vector2> PathFinding::FindPath(const Vector2& start, const Vector2& 
 				continue;
 			}
 
+			// Calculates the new movement cost (gCost) for the neighbor node.
 			float newGCost = current->gCost + CalculateHeuristic(current->position, neighborPos);
 
+			// Checks if the neighbor node is already in the open set.
 			bool inOpenSet = false;
 
 			PathNode* neighborNode = nullptr;
@@ -81,11 +94,12 @@ std::vector<Vector2> PathFinding::FindPath(const Vector2& start, const Vector2& 
 				}
 			}
 
+			// If the neighbor node is not in the open set, it will create a new node and add it to the open set.
 			if (!inOpenSet)
 			{
 				neighborNode = new PathNode
 				{
-					current, 
+					current,
 					neighborPos,
 					newGCost,
 					CalculateHeuristic(neighborPos, end)
@@ -94,7 +108,7 @@ std::vector<Vector2> PathFinding::FindPath(const Vector2& start, const Vector2& 
 				allNodes.push_back(neighborNode);
 				openSet.insert(neighborNode);
 			}
-			else if (newGCost < neighborNode->gCost)
+			else if (newGCost < neighborNode->gCost) // If the new gCost is lower, it will update the neighbor node.
 			{
 				openSet.erase(neighborNode);
 				neighborNode->gCost = newGCost;
@@ -104,6 +118,7 @@ std::vector<Vector2> PathFinding::FindPath(const Vector2& start, const Vector2& 
 		}
 	}
 
+	// No path found, clean up and return empty path 
 	for (auto node : allNodes)
 	{
 		delete node;
@@ -112,20 +127,24 @@ std::vector<Vector2> PathFinding::FindPath(const Vector2& start, const Vector2& 
 	return {};
 }
 
+// Checks if there is a valid path between two points.
 bool PathFinding::HasPath(const Vector2& start, const Vector2& end)
 {
 	return !FindPath(start, end).empty();
 }
 
+// Computes the Manhattan Distance heuristic between points.
 float PathFinding::CalculateHeuristic(const Vector2& a, const Vector2& b)
 {
 	return std::abs(a.x - b.x) + std::abs(a.y - b.y);
 }
 
+// Finds all walkable adjacent grid positions.
 std::vector<Vector2> PathFinding::GetNeighbors(const Vector2& position)
 {
 	std::vector<Vector2> neighbors;
 
+	// Checks for walkable tiles in the 4 directions (up, right, down, left).
 	const int dx[] = { 0, 1, 0, -1 };
 	const int dy[] = { -1, 0, 1, 0 };
 
@@ -137,15 +156,18 @@ std::vector<Vector2> PathFinding::GetNeighbors(const Vector2& position)
 			position.y + dy[i]
 		};
 
+		// If the tile is walkable, it will add it to the neighbors list.
 		if (world->IsTileWalkable(newPos))
 		{
 			neighbors.push_back(newPos);
 		}
 	}
 
+	// Checks for walkable tiles in the 4 diagonal directions.
 	const int diagDx[] = { 1, 1, -1, -1 };
 	const int diagDy[] = { -1, 1, 1, -1 };
 
+	// Adds the diagonal movements if the horizontal and vertical neighbors are walkable.
 	for (int i = 0; i < 4; i++)
 	{
 		Vector2 newPos =
@@ -167,6 +189,7 @@ std::vector<Vector2> PathFinding::GetNeighbors(const Vector2& position)
 	return neighbors;
 }
 
+// Builds the complete path by tracing parent nodes.
 std::vector<Vector2> PathFinding::ReconstructPath(PathNode* endNode)
 {
 	PathNode* current = endNode;
@@ -184,6 +207,7 @@ std::vector<Vector2> PathFinding::ReconstructPath(PathNode* endNode)
 	return path;
 }
 
+// Visualizes a path for debugging purposes.
 void PathFinding::DebugDrawPath(const std::vector<Vector2>& path, Color color)
 {
 	if (path.empty()) return;
