@@ -10,12 +10,15 @@
 // Creates a new world with specified dimensions and cell size.
 World::World(int width, int height, float cellSize, float viewportYOffset, float scaleFactor, Simulation* simulation) : width(width), height(height), cellSize(cellSize* scaleFactor), minY(viewportYOffset), scaleFactor(scaleFactor), simulation(simulation)
 {
+	navigationGrid = std::make_unique<NavigationGrid>(width, height);
 }
 
 // Initializes the world with a specified number entities.
 void World::Initialize(int grassCount, int sheepCount, int wolfCount)
 {
 	float minimumY = GetMinY();
+
+	navigationGrid->Initialize();
 
 	// Initialize grass
 	for (int i = 0; i < grassCount; i++)
@@ -143,6 +146,11 @@ void World::Update(float deltaTime)
 // Renders all grass entities in the world.
 void World::Draw()
 {
+	if (navigationGrid) 
+	{
+		navigationGrid->Draw(this);
+	}
+
 	for (const auto& grass : grasses)
 	{
 		grass->Draw();
@@ -458,4 +466,10 @@ void World::UpdateBloodSplatters(float deltaTime)
 			++it;
 		}
 	}
+}
+
+// Checks if a tile is walkable.
+bool World::IsTileWalkable(const Vector2& gridPosition) const
+{
+	return navigationGrid ? navigationGrid->IsTileWalkable(gridPosition) : true;
 }

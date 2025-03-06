@@ -179,6 +179,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GrassSheepWolves-FSM\Dear Claude\EditMode.cpp" />
+    <ClCompile Include="GrassSheepWolves-FSM\Dear Claude\ModifiedWorld.cpp" />
+    <ClCompile Include="GrassSheepWolves-FSM\source\World\NavigationGrid.cpp" />
     <ClCompile Include="GrassSheepWolves-FSM\source\Entities\Entity.cpp" />
     <ClCompile Include="GrassSheepWolves-FSM\source\Entities\Grass\BaseState\GrassBaseState.cpp" />
     <ClCompile Include="GrassSheepWolves-FSM\main.cpp" />
@@ -191,6 +194,7 @@
     <ClCompile Include="GrassSheepWolves-FSM\source\Entities\Wolf\States\WolfStates.cpp" />
     <ClCompile Include="GrassSheepWolves-FSM\source\Entities\Wolf\WolfStateMachine.cpp" />
     <ClCompile Include="GrassSheepWolves-FSM\source\Simulation\Simulation.cpp" />
+    <ClCompile Include="GrassSheepWolves-FSM\source\Utility\PathFinding.cpp" />
     <ClCompile Include="GrassSheepWolves-FSM\source\Utility\RuntimeConfig.cpp" />
     <ClCompile Include="GrassSheepWolves-FSM\source\Utility\StateMachine.cpp" />
     <ClCompile Include="GrassSheepWolves-FSM\source\vendor\ImGUI\imgui.cpp" />
@@ -203,6 +207,9 @@
     <ClCompile Include="GrassSheepWolves-FSM\source\Utility\WindowUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GrassSheepWolves-FSM\Dear Claude\EditMode.h" />
+    <ClInclude Include="GrassSheepWolves-FSM\Dear Claude\ModifiedWorld.h" />
+    <ClInclude Include="GrassSheepWolves-FSM\include\World\NavigationGrid.h" />
     <ClInclude Include="GrassSheepWolves-FSM\include\Entities\Entity.h" />
     <ClInclude Include="GrassSheepWolves-FSM\include\Entities\Grass\BaseState\GrassBaseState.h" />
     <ClInclude Include="GrassSheepWolves-FSM\include\Entities\Grass\GrassStateMachine.h" />
@@ -214,6 +221,7 @@
     <ClInclude Include="GrassSheepWolves-FSM\include\Entities\Wolf\WolfStateMachine.h" />
     <ClInclude Include="GrassSheepWolves-FSM\include\Simulation\Simulation.h" />
     <ClInclude Include="GrassSheepWolves-FSM\include\Utility\CoordinateUtils.h" />
+    <ClInclude Include="GrassSheepWolves-FSM\include\Utility\PathFinding.h" />
     <ClInclude Include="GrassSheepWolves-FSM\include\Utility\SimulationConfig.h" />
     <ClInclude Include="GrassSheepWolves-FSM\include\Utility\State.h" />
     <ClInclude Include="GrassSheepWolves-FSM\include\Utility\StateMachine.h" />

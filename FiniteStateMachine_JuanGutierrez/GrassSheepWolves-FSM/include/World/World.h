@@ -5,6 +5,7 @@
 #include <Entities/Wolf/WolfStateMachine.h>
 #include <Utility/SimulationConfig.h>
 #include <Simulation/Simulation.h>
+#include <World/NavigationGrid.h>
 
 #include <raylib.h>
 
@@ -12,8 +13,10 @@
 #include <memory>
 
 
-class WolfStateMachine;
+
 class GrassStateMachine;
+class WolfStateMachine;
+class NavigationGrid;
 class Simulation;
 
 
@@ -57,6 +60,7 @@ public:
 	void CreateWolf(Vector2 position);
 
 	bool IsSheepPoopNearby(Vector2 position, float radius) const;
+	bool IsTileWalkable(const Vector2& gridPosition) const;
 	bool IsAdjacentToGrass(Vector2 position) const;
 	bool IsCellOccupied(Vector2 position) const;
 
@@ -74,6 +78,9 @@ public:
 	float GetMinY() const { return minY; }
 
 	float GetScaleFactor() const { return scaleFactor; }
+
+	int GetHeight() const { return height; }
+	int GetWidth() const { return width; }
 
 private:
 	Simulation* simulation;
@@ -94,4 +101,7 @@ private:
 	std::vector<std::unique_ptr<GrassStateMachine>> grasses;
 	std::vector<std::unique_ptr<WolfStateMachine>> wolves;
 	std::vector<std::unique_ptr<SheepStateMachine>> sheeps;
+
+
+	std::unique_ptr<NavigationGrid> navigationGrid;
 };

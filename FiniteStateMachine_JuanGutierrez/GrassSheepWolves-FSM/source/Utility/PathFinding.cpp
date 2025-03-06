@@ -137,12 +137,10 @@ std::vector<Vector2> PathFinding::GetNeighbors(const Vector2& position)
 			position.y + dy[i]
 		};
 
-		// My dear Claude! I commented this because I haven't implemented the world part yet, so for now we will focus on fixing the current errors that we can fix just from the Pathfinding logic itself! (; 
-
-		/*if (world->IsTileWalkable(newPos))
+		if (world->IsTileWalkable(newPos))
 		{
 			neighbors.push_back(newPos);
-		}*/
+		}
 	}
 
 	const int diagDx[] = { 1, 1, -1, -1 };
@@ -160,12 +158,10 @@ std::vector<Vector2> PathFinding::GetNeighbors(const Vector2& position)
 		Vector2 vertical = { position.x, position.y + diagDy[i] };
 
 
-		// My dear Claude! I commented this because I haven't implemented the world part yet, so for now we will focus on fixing the current errors that we can fix just from the Pathfinding logic itself! (; 
-
-		/*if (world->IsTileWalkable(newPos) && world->IsTileWalkable(horizontal) && world->IsTileWalkable(vertical))
+		if (world->IsTileWalkable(newPos) && world->IsTileWalkable(horizontal) && world->IsTileWalkable(vertical))
 		{
 			neighbors.push_back(newPos);
-		}*/
+		}
 	}
 
 	return neighbors;

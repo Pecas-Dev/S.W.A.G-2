@@ -1,3 +1,75 @@
+// MY DEAR CLAUDE: THIS IS THE CURRENT IMPLEMENTATION , THE ONE BELOW IS THE FULL ON IMPLEMENTATION YOU GAVE ME WHEN I FIRST ASKED YOU TO HELP ME WITH THIS, SO YOU CAN USE THAT AS REFERENCE, BUT PERHAPS THE CODE WILL CHANGE WITH TIME SO WE MIGHT NEED TO ADAPT IT, SO YEAH, IT'S REFERENCE, BUT NOT SET IN STONE.
+
+#pragma once
+
+#include <raylib.h>
+#include <vector>
+#include <Utility/ValueConfig.h>
+
+
+class World;
+
+
+struct Tile 
+{
+    bool walkable;
+    Color color;
+};
+
+class NavigationGrid {
+public:
+    NavigationGrid(int width, int height);
+    ~NavigationGrid();
+
+
+    void Initialize();
+
+
+    void SetTileWalkable(const Vector2& gridPosition, bool walkable);
+    void Draw(World* world);
+
+    bool IsWithinBounds(const Vector2& gridPosition) const;
+    bool IsTileWalkable(const Vector2& gridPosition) const;
+
+private:
+    int width;
+    int height;
+
+    std::vector<std::vector<Tile>> grid;
+
+    const Color walkableColor = { 0, 150, 0, 50 };       
+    const Color nonWalkableColor = { 150, 0, 0, 100 };   
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;

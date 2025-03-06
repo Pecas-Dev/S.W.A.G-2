@@ -81,6 +81,18 @@
     <ClCompile Include="GrassSheepWolves-FSM\source\Utility\WindowUtils.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="GrassSheepWolves-FSM\source\Utility\PathFinding.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="GrassSheepWolves-FSM\source\World\NavigationGrid.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="GrassSheepWolves-FSM\Dear Claude\EditMode.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="GrassSheepWolves-FSM\Dear Claude\ModifiedWorld.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GrassSheepWolves-FSM\include\Utility\State.h">
@@ -171,6 +183,18 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="GrassSheepWolves-FSM\include\Utility\TestingConfig.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="GrassSheepWolves-FSM\include\Utility\PathFinding.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="GrassSheepWolves-FSM\include\World\NavigationGrid.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="GrassSheepWolves-FSM\Dear Claude\EditMode.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="GrassSheepWolves-FSM\Dear Claude\ModifiedWorld.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
