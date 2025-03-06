@@ -30,12 +30,10 @@ std::vector<Vector2> PathFinding::FindPath(const Vector2& start, const Vector2& 
 
 	PathNode* startNode = new PathNode
 	{
-		start, // I am getting an error here: Gravedad	Código	Descripción	Proyecto	Archivo	Línea	Estado suprimido	Detalles Error(activo)	E0413	no existe ninguna función de conversión de "const Vector2" a "PathNode *" adecuada	FiniteStateMachine_JuanGutierrez	C : \Users\juang\Desktop\S.W.A.G - 2\FiniteStateMachine_JuanGutierrez\GrassSheepWolves - FSM\source\Utility\PathFinding.cpp	33
-
+		nullptr,
+		start,
 		0.0f,
-		CalculateHeuristic(start, end),
-		nullptr // I am getting an error here: Gravedad	Código	Descripción	Proyecto	Archivo	Línea	Estado suprimido	Detalles Error(activo)	E0144	no se puede usar un valor de tipo "std::nullptr_t" para inicializar una entidad de tipo "float"	FiniteStateMachine_JuanGutierrez	C : \Users\juang\Desktop\S.W.A.G - 2\FiniteStateMachine_JuanGutierrez\GrassSheepWolves - FSM\source\Utility\PathFinding.cpp	37
-
+		CalculateHeuristic(start, end) 
 	};
 
 	allNodes.push_back(startNode);
@@ -87,12 +85,10 @@ std::vector<Vector2> PathFinding::FindPath(const Vector2& start, const Vector2& 
 			{
 				neighborNode = new PathNode
 				{
-					neighborPos, // I am getting an error here: Gravedad	Código	Descripción	Proyecto	Archivo	Línea	Estado suprimido	Detalles Error(activo)	E0413	no existe ninguna función de conversión de "const Vector2" a "PathNode *" adecuada	FiniteStateMachine_JuanGutierrez	C : \Users\juang\Desktop\S.W.A.G - 2\FiniteStateMachine_JuanGutierrez\GrassSheepWolves - FSM\source\Utility\PathFinding.cpp	88
-
+					current, 
+					neighborPos,
 					newGCost,
-					CalculateHeuristic(neighborPos, end),
-					current // I am getting an error here: Gravedad	Código	Descripción	Proyecto	Archivo	Línea	Estado suprimido	Detalles Error(activo)	E0144	no se puede usar un valor de tipo "PathNode *" para inicializar una entidad de tipo "float"	FiniteStateMachine_JuanGutierrez	C : \Users\juang\Desktop\S.W.A.G - 2\FiniteStateMachine_JuanGutierrez\GrassSheepWolves - FSM\source\Utility\PathFinding.cpp	92
-
+					CalculateHeuristic(neighborPos, end)
 				};
 
 				allNodes.push_back(neighborNode);
