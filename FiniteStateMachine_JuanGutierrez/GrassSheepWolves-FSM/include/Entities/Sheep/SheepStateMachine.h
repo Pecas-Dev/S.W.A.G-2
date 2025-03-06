@@ -8,6 +8,7 @@
 #include <raylib.h>
 
 #include <unordered_set>
+#include <optional>
 #include <vector>
 #include <memory>
 
@@ -26,7 +27,9 @@ public:
 		Eating,
 		Defecating,
 		RunningAway,
-		Reproducing
+		Reproducing,
+
+		Following
 	};
 
 	SheepStateMachine(World* world, Vector2 position, float scaleFactor = 1.0f);
@@ -44,6 +47,24 @@ public:
 	void RequestNewSheep(Vector2 position);
 	void SetPosition(Vector2 newPosition);
 	void LeaveGroup();
+
+
+	// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
+
+	/*void SetCurrentPath(const std::vector<Vector2>& path, Vector2 target);
+	void NavigateTo(Vector2 targetGridPosition);
+	void FollowPath(float deltaTime);
+	bool HasReachedPathEnd() const;
+	void ClearPath();
+
+	bool IsFollowingPath() const { return !currentPath.empty() && currentSheepState == SheepState::Following; }
+
+	const std::optional<std::vector<Vector2>>& GetCurrentPath() const { return currentPath; }
+
+	Vector2 GetPathTarget() const { return pathTarget; }*/
+
+
+
 
 
 	void SetHealth(float value) { health = std::min(value, RuntimeConfig::SheepMaxHealth()); if (health <= 0) { Die(); } }
@@ -109,6 +130,19 @@ private:
 	float groupTimer;
 	float scaleFactor;
 	float groupCooldownTimer = 0.0f;
+
+
+	// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
+
+	/*std::optional<std::vector<Vector2>> currentPath;
+
+
+	Vector2 pathTarget;
+	size_t currentPathIndex = 0;
+	float pathFollowTimer = 0.0f;
+
+	static constexpr float pathUpdateInterval = 0.5f; // Time between path recalculations */
+
 
 	static constexpr float cellSize = ValueConfig::World::CellSize;
 };

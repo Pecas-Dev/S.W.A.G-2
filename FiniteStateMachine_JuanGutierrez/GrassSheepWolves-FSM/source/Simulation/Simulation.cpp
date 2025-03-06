@@ -127,6 +127,29 @@ void Simulation::Initialize()
 	InitializeImGui();
 	ImGui::GetIO().IniFilename = "GrassSheepWolves-FSM/include/vendor/imgui.ini";
 
+
+
+
+
+
+
+
+	// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
+
+	/*
+	// Create edit mode
+    editMode = std::make_unique<EditMode>(world.get());
+    
+    // Setup callback for navigation changes
+    editMode->SetOnNavigationChangedCallback([this]() { OnNavigationChanged(); });*/
+
+
+
+
+
+
+
+
 #ifdef _WIN32
 	FILE* dummyFile;
 	freopen_s(&dummyFile, "CONOUT$", "w", stdout);
@@ -151,6 +174,8 @@ void Simulation::ShutdownImGui()
 // Processes world updates each frame using the current frame time.
 void Simulation::Update()
 {
+	float deltaTime = GetFrameTime();
+
 	if (IsKeyPressed(KEY_R))
 	{
 		showDetectionRadii = !showDetectionRadii;
@@ -158,8 +183,32 @@ void Simulation::Update()
 
 	if (currentState == SimulationState::Running && world)
 	{
-		world->Update(GetFrameTime());
+		world->Update(deltaTime);
 	}
+
+
+
+	// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
+
+	/*else if (currentState == SimulationState::EditMode)
+	{
+		editMode->Update();
+	}
+
+	if (currentState == SimulationState::Running || currentState == SimulationState::EditMode) 
+	{
+		// Toggle edit mode with E key
+		if (IsKeyPressed(KEY_E)) 
+		{
+			ToggleEditMode();
+		}
+
+		// Toggle path visualization with P key
+		if (IsKeyPressed(KEY_P)) 
+		{
+			TogglePathVisualization();
+		}
+	}*/
 }
 
 // Calculates window dimensions for a given scale factor.
@@ -327,6 +376,14 @@ void Simulation::Draw()
 
 		DrawSimulationLayout();
 	}
+
+
+	// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
+
+	/*if (currentState == SimulationState::EditMode)
+	{
+		DrawEditModeUI();
+	}*/
 
 	rlImGuiEnd();
 	EndDrawing();
@@ -1163,6 +1220,60 @@ void Simulation::DrawTabBar()
 
 		ImGui::EndTabBar();
 	}
+
+
+
+	// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
+
+	/*if (ImGui::BeginTabBar("SimulationTabs", ImGuiTabBarFlags_None))
+	{
+		if (ImGui::BeginTabItem("Main"))
+		{
+			ImGui::Checkbox("Show Entity Status", &showEntityStatus);
+			ImGui::SameLine();
+			ImGui::Checkbox("Show Detection Radii", &showDetectionRadii);
+			ImGui::SameLine();
+
+			// Path visualization toggle
+			bool pathsShown = showPaths;
+			if (ImGui::Checkbox("Show Paths (P)", &pathsShown)) {
+				if (pathsShown != showPaths) {
+					TogglePathVisualization();
+				}
+			}
+
+			// Edit mode toggle
+			bool editModeActive = (currentState == SimulationState::EditMode);
+			if (ImGui::Checkbox("Edit Mode (E)", &editModeActive)) {
+				if (editModeActive != (currentState == SimulationState::EditMode)) {
+					ToggleEditMode();
+				}
+			}
+
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Grass"))
+		{
+			RenderGrassSettings();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Sheep"))
+		{
+			RenderSheepSettings();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Wolf"))
+		{
+			RenderWolfSettings();
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
+	}*/
+
 }
 
 // Draws the console window with captured printf output.
@@ -1279,3 +1390,73 @@ void Simulation::Run()
 		Draw();
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
+
+
+/*
+// Toggle edit mode on and off
+void Simulation::ToggleEditMode()
+{
+    if (currentState == SimulationState::Running) {
+        currentState = SimulationState::EditMode;
+        editMode->Toggle();
+        AddConsoleMessage("Entered Edit Mode - Modify navigation grid\n");
+    } else if (currentState == SimulationState::EditMode) {
+        currentState = SimulationState::Running;
+        editMode->Toggle();
+        AddConsoleMessage("Exited Edit Mode\n");
+    }
+}
+
+// Toggle path visualization
+void Simulation::TogglePathVisualization()
+{
+    showPaths = !showPaths;
+    world->SetShowDebugPaths(showPaths);
+    
+    if (showPaths) {
+        AddConsoleMessage("Path visualization enabled\n");
+    } else {
+        AddConsoleMessage("Path visualization disabled\n");
+        world->ClearDebugPaths();
+    }
+}
+
+// Callback when navigation grid is modified
+void Simulation::OnNavigationChanged()
+{
+    // Recalculate paths for all entities
+    world->RecalculateAllPaths();
+    AddConsoleMessage("Navigation updated - Paths recalculated\n");
+}
+
+
+
+void Simulation::DrawEditModeUI()
+{
+	if (currentState != SimulationState::EditMode) {
+		return;
+	}
+
+	// The EditMode class has its own UI rendering
+	editMode->Draw();
+
+	// Handle keyboard shortcuts
+	if (IsKeyPressed(KEY_ESCAPE)) {
+		ToggleEditMode();
+	}
+}
+
+*/

@@ -767,3 +767,63 @@ void ReproducingState::Exit()
 {
 	sheepStateMachine->ResetGroupTimer();
 }
+
+
+
+
+
+
+
+// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
+
+/*
+
+// Initializes the following path state
+FollowingPathState::FollowingPathState(SheepStateMachine* stateMachine)
+	: SheepBaseState(stateMachine),
+	moveSpeed(RuntimeConfig::SheepWanderSpeed())
+{
+}
+
+// Sets up initial path following behavior
+void FollowingPathState::Enter()
+{
+	if (Simulation* simulation = dynamic_cast<Simulation*>(sheepStateMachine->GetWorld()->GetSimulation())) {
+		simulation->AddConsoleMessage("Sheep entered FOLLOWING PATH state\n");
+	}
+
+	sheepStateMachine->SetCurrentState(SheepStateMachine::SheepState::Following);
+}
+
+// Follows the current path step by step
+void FollowingPathState::Tick(float deltaTime)
+{
+	// Check for nearby wolves
+	if (const WolfStateMachine* nearestWolf = sheepStateMachine->GetNearestWolf()) {
+		// Switch to running away if a wolf is detected
+		sheepStateMachine->SwitchState(std::make_unique<RunningAwayState>(sheepStateMachine));
+		return;
+	}
+
+	// Follow the path
+	sheepStateMachine->FollowPath(deltaTime);
+
+	// If path is completed
+	if (sheepStateMachine->HasReachedPathEnd()) {
+		// Switch back to appropriate state
+		if (sheepStateMachine->IsInGroup()) {
+			sheepStateMachine->SwitchState(std::make_unique<WanderingInGroupState>(sheepStateMachine));
+		}
+		else {
+			sheepStateMachine->SwitchState(std::make_unique<WanderingAloneState>(sheepStateMachine));
+		}
+	}
+}
+
+// Cleanup when exiting following path state
+void FollowingPathState::Exit()
+{
+	// No specific cleanup needed
+}
+
+*/

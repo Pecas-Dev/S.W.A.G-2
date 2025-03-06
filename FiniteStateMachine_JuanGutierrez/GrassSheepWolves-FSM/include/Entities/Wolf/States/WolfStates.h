@@ -89,3 +89,21 @@ private:
 	static constexpr float returnSpeed = ValueConfig::Wolf::ReturnSpeed; 
 	static constexpr float denProximityThreshold = 5.0f;
 };
+
+
+
+
+// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
+
+/*class FollowingPathState : public WolfBaseState
+{
+public:
+	FollowingPathState(WolfStateMachine* stateMachine);
+
+	void Enter() override;
+	void Tick(float deltaTime) override;
+	void Exit() override;
+
+private:
+	float moveSpeed;
+};*/

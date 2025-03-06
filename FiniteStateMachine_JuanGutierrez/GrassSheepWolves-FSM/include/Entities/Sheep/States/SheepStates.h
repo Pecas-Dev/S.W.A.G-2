@@ -123,3 +123,23 @@ private:
 
 	static constexpr float timeToReproduce = ValueConfig::Sheep::TimeToReproduce;
 };
+
+
+
+// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
+
+/*
+class FollowingPathState : public SheepBaseState
+{
+public:
+	FollowingPathState(SheepStateMachine* stateMachine);
+
+	void Enter() override;
+	void Tick(float deltaTime) override;
+	void Exit() override;
+
+private:
+	float moveSpeed;
+};
+
+*/

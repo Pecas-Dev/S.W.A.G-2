@@ -7,6 +7,8 @@
 
 #include <raylib.h>
 
+#include <optional>
+
 
 class World;
 class SheepStateMachine;
@@ -21,7 +23,9 @@ public:
 		Roaming,
 		Hunting,
 		Eating,
-		ReturnToDen
+		ReturnToDen,
+
+		Following
 	};
 
 	WolfStateMachine(World* world, Vector2 position, float scaleFactor = 1.0f);
@@ -39,6 +43,22 @@ public:
 	void SetPosition(Vector2 newPosition);
 	void DrawHuntingLine();
 	void FindNewTarget();
+
+
+
+	// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
+	/*
+	void NavigateTo(Vector2 targetGridPosition);
+	void FollowPath(float deltaTime);
+	void ClearPath();
+	bool HasReachedPathEnd() const;
+	bool IsFollowingPath() const { return !currentPath.empty() && currentWolfState == WolfState::Following; }
+	const std::optional<std::vector<Vector2>>& GetCurrentPath() const { return currentPath; }
+	Vector2 GetPathTarget() const { return pathTarget; }
+	void SetCurrentPath(const std::vector<Vector2>& path, Vector2 target);*/
+
+
+
 
 
 	void SetTargetSheep(SheepStateMachine* sheep) { targetSheep = sheep; }
@@ -80,6 +100,19 @@ private:
 	float stamina;
 	float scaleFactor;
 	float targetingTimer;
+
+
+
+	// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
+
+	/*
+	std::optional<std::vector<Vector2>> currentPath;
+	Vector2 pathTarget;
+	size_t currentPathIndex = 0;
+	float pathFollowTimer = 0.0f;
+	static constexpr float pathUpdateInterval = 0.5f; // Time between path recalculations */
+
+
 
 	const float tiredThreshold = RuntimeConfig::WolfStaminaMax() * 0.2f;
 	const float hungerThreshold = RuntimeConfig::WolfHungerThreshold();

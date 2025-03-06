@@ -543,3 +543,142 @@ void SheepStateMachine::SetPosition(Vector2 newPosition)
 
 	position = newPosition;
 }
+
+
+
+
+
+
+// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
+
+/*
+// Navigate to a target grid position using pathfinding
+void SheepStateMachine::NavigateTo(Vector2 targetGridPosition)
+{
+	// Get current grid position
+	Vector2 currentGridPos = world->WorldToGrid(position);
+
+	// Find path
+	std::vector<Vector2> path = world->FindPath(currentGridPos, targetGridPosition);
+
+	// Set path and target
+	SetCurrentPath(path, targetGridPosition);
+
+	// If path found, switch to following state
+	if (!path.empty()) {
+		SwitchState(std::make_unique<FollowingPathState>(this));
+	}
+
+	// Add debug visualization
+	if (world->AreDebugPathsShown() && !path.empty()) {
+		world->AddDebugPath(path, { 0, 0, 255, 128 }); // Blue for sheep
+	}
+}
+
+// Follow the current path
+void SheepStateMachine::FollowPath(float deltaTime)
+{
+	if (!currentPath.has_value() || currentPath->empty()) {
+		return;
+	}
+
+	// Update path follow timer
+	pathFollowTimer += deltaTime;
+
+	// Recalculate path periodically
+	if (pathFollowTimer >= pathUpdateInterval) {
+		pathFollowTimer = 0.0f;
+
+		// Recalculate path if we're not close to the end
+		if (currentPathIndex < currentPath->size() - 3) {
+			NavigateTo(pathTarget);
+			return;
+		}
+	}
+
+	// Get current path point
+	Vector2 targetGridPos = (*currentPath)[currentPathIndex];
+	Vector2 targetWorldPos = world->GridToWorld(targetGridPos);
+
+	// Center position in the cell
+	targetWorldPos.x += cellSize * scaleFactor / 2;
+	targetWorldPos.y += cellSize * scaleFactor / 2;
+
+	// Calculate direction to target
+	Vector2 direction;
+	direction.x = targetWorldPos.x - position.x;
+	direction.y = targetWorldPos.y - position.y;
+
+	// Calculate distance to target
+	float distance = sqrtf(direction.x * direction.x + direction.y * direction.y);
+
+	// If close enough to current target, move to next path point
+	float arrivalThreshold = cellSize * scaleFactor * 0.5f;
+	if (distance <= arrivalThreshold) {
+		currentPathIndex++;
+
+		// If reached end of path, clear it
+		if (currentPathIndex >= currentPath->size()) {
+			ClearPath();
+			return;
+		}
+	}
+
+	// Normalize direction
+	if (distance > 0) {
+		direction.x /= distance;
+		direction.y /= distance;
+	}
+
+	// Calculate movement speed (use appropriate speed based on state)
+	float moveSpeed = RuntimeConfig::SheepWanderSpeed() * scaleFactor;
+	if (currentSheepState == SheepState::RunningAway) {
+		moveSpeed = RuntimeConfig::SheepFleeSpeed() * scaleFactor;
+	}
+
+	// Update position
+	Vector2 newPosition = position;
+	newPosition.x += direction.x * moveSpeed * deltaTime;
+	newPosition.y += direction.y * moveSpeed * deltaTime;
+
+	// Set new position with boundary checks
+	SetPosition(newPosition);
+}
+
+// Clear the current path
+void SheepStateMachine::ClearPath()
+{
+	currentPath.reset();
+	currentPathIndex = 0;
+
+	// If we're in following state, return to appropriate wandering state
+	if (currentSheepState == SheepState::Following) {
+		if (IsInGroup()) {
+			SwitchState(std::make_unique<WanderingInGroupState>(this));
+		}
+		else {
+			SwitchState(std::make_unique<WanderingAloneState>(this));
+		}
+	}
+}
+
+// Check if the sheep has reached the end of its path
+bool SheepStateMachine::HasReachedPathEnd() const
+{
+	return !currentPath.has_value() || currentPathIndex >= currentPath->size();
+}
+
+// Set the current path and target
+void SheepStateMachine::SetCurrentPath(const std::vector<Vector2>& path, Vector2 target)
+{
+	currentPath = path;
+	pathTarget = target;
+	currentPathIndex = 0;
+
+	// Only switch to following state if path is not empty
+	if (!path.empty()) {
+		currentSheepState = SheepState::Following;
+	}
+}
+
+*/

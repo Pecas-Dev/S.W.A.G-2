@@ -398,3 +398,59 @@ void ReturnToDenState::Tick(float deltaTime)
 void ReturnToDenState::Exit()
 {
 }
+
+
+
+
+// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
+
+/*
+// Initializes the following path state
+FollowingPathState::FollowingPathState(WolfStateMachine* stateMachine)
+	: WolfBaseState(stateMachine),
+	moveSpeed(RuntimeConfig::WolfRoamSpeed())
+{
+}
+
+// Sets up initial path following behavior
+void FollowingPathState::Enter()
+{
+	if (Simulation* simulation = dynamic_cast<Simulation*>(wolfStateMachine->GetWorld()->GetSimulation())) {
+		simulation->AddConsoleMessage("Wolf entered FOLLOWING PATH state\n");
+	}
+
+	wolfStateMachine->SetCurrentState(WolfStateMachine::WolfState::Following);
+}
+
+// Follows the current path step by step
+void FollowingPathState::Tick(float deltaTime)
+{
+	// Update hunger
+	float currentHunger = wolfStateMachine->GetHunger();
+	currentHunger = std::min(currentHunger + RuntimeConfig::WolfHungerIncreaseRate() * deltaTime, RuntimeConfig::WolfMaxHunger());
+	wolfStateMachine->SetHunger(currentHunger);
+
+	// Check hunger state
+	if (currentHunger >= wolfStateMachine->GetHungerThreshold() && !wolfStateMachine->GetTargetSheep()) {
+		wolfStateMachine->FindNewTarget();
+
+		if (wolfStateMachine->GetTargetSheep()) {
+			wolfStateMachine->SwitchState(std::make_unique<HuntingState>(wolfStateMachine));
+			return;
+		}
+	}
+
+	// Follow the path
+	wolfStateMachine->FollowPath(deltaTime);
+
+	// If path is completed
+	if (wolfStateMachine->HasReachedPathEnd()) {
+		wolfStateMachine->SwitchState(std::make_unique<RoamingState>(wolfStateMachine));
+	}
+}
+
+// Cleanup when exiting following path state
+void FollowingPathState::Exit()
+{
+	// No specific cleanup needed
+}*/
