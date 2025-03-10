@@ -42,7 +42,7 @@ void EditMode::Toggle()
 {
 	isActive = !isActive;
 
-	if (isActive)
+	if (isActive && world)
 	{
 		Vector2 mousePos = GetMousePosition();
 		cursorGridPosition = ScreenToGrid(mousePos);

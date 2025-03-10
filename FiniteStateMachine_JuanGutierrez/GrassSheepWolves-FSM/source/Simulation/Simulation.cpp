@@ -33,9 +33,6 @@ Simulation::Simulation() : screenWidth(1850), screenHeight(900), cellSize(ValueC
 		simulationHeight - titleBarHeight
 	};
 
-	editMode = std::make_unique<EditMode>(world.get());
-	editMode->SetOnNavigationChangedCallback([this]() { OnNavigationChanged(); });
-
 	UpdateValidScalingOptions();
 }
 
@@ -176,7 +173,7 @@ void Simulation::Update()
 		world->Update(deltaTime);
 	}
 
-	if (currentState == SimulationState::EditMode)
+	if (currentState == SimulationState::EditMode && editMode)
 	{
 		editMode->Update();
 	}
@@ -348,7 +345,7 @@ void Simulation::Draw()
 		DrawSimulationLayout();
 	}
 
-	if (currentState == SimulationState::EditMode)
+	if (currentState == SimulationState::EditMode && editMode)
 	{
 		DrawEditModeUI();
 	}
@@ -1163,8 +1160,19 @@ void Simulation::DrawLegendPanel()
 		{
 			ImGui::Spacing();
 		}
+
 		ImGui::Checkbox("Show Detection Radii (R)", &showDetectionRadii);
-		ImGui::Text("Toggle visibility of detection ranges");
+
+		ImGui::SameLine();
+
+		if (ImGui::Checkbox("Show Paths", &showPaths))
+		{
+			world->SetShowDebugPaths(showPaths);
+		}
+
+		ImGui::Text("Press 'R' to toggle Detection Radii");
+		ImGui::Text("Press 'E' to toggle Edit Mode");
+		ImGui::Text("Press 'P' to toggle Path Visualization");
 	}
 	ImGui::End();
 }
@@ -1315,6 +1323,9 @@ void Simulation::StartSimulation()
 	world = std::make_unique<World>(worldWidth, worldHeight, ValueConfig::World::CellSize, simulationViewport.y, screenScaleFactor, this);
 	world->Initialize(initialGrassCount, initialSheepCount, initialWolfCount);
 
+	editMode = std::make_unique<EditMode>(world.get());
+	editMode->SetOnNavigationChangedCallback([this]() { OnNavigationChanged(); });
+
 	currentState = SimulationState::Running;
 }
 
@@ -1361,6 +1372,11 @@ void Simulation::Run()
  
 void Simulation::ToggleEditMode()
 {
+	if (!editMode || !world)
+	{
+		return;
+	}
+
 	if (currentState == SimulationState::Running)
 	{
 		currentState = SimulationState::EditMode;
