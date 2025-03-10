@@ -3,6 +3,7 @@
 #include <Utility/TestingConfig.h>
 #include <Utility/ValueConfig.h>
 #include <Utility/WindowUtils.h>
+#include <Simulation/EditMode.h>
 
 #include <rlImGui.h>
 #include <raylib.h>
@@ -32,6 +33,8 @@ Simulation::Simulation() : screenWidth(1850), screenHeight(900), cellSize(ValueC
 		simulationHeight - titleBarHeight
 	};
 
+	editMode = std::make_unique<EditMode>(world.get());
+	editMode->SetOnNavigationChangedCallback([this]() { OnNavigationChanged(); });
 
 	UpdateValidScalingOptions();
 }
@@ -127,29 +130,6 @@ void Simulation::Initialize()
 	InitializeImGui();
 	ImGui::GetIO().IniFilename = "GrassSheepWolves-FSM/include/vendor/imgui.ini";
 
-
-
-
-
-
-
-
-	// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
-
-	/*
-	// Create edit mode
-    editMode = std::make_unique<EditMode>(world.get());
-    
-    // Setup callback for navigation changes
-    editMode->SetOnNavigationChangedCallback([this]() { OnNavigationChanged(); });*/
-
-
-
-
-
-
-
-
 #ifdef _WIN32
 	FILE* dummyFile;
 	freopen_s(&dummyFile, "CONOUT$", "w", stdout);
@@ -181,34 +161,25 @@ void Simulation::Update()
 		showDetectionRadii = !showDetectionRadii;
 	}
 
+	if (IsKeyPressed(KEY_E))
+	{
+		ToggleEditMode();
+	}
+
+	if (IsKeyPressed(KEY_P))
+	{
+		TogglePathVisualization();
+	}
+
 	if (currentState == SimulationState::Running && world)
 	{
 		world->Update(deltaTime);
 	}
 
-
-
-	// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
-
-	/*else if (currentState == SimulationState::EditMode)
+	if (currentState == SimulationState::EditMode)
 	{
 		editMode->Update();
 	}
-
-	if (currentState == SimulationState::Running || currentState == SimulationState::EditMode) 
-	{
-		// Toggle edit mode with E key
-		if (IsKeyPressed(KEY_E)) 
-		{
-			ToggleEditMode();
-		}
-
-		// Toggle path visualization with P key
-		if (IsKeyPressed(KEY_P)) 
-		{
-			TogglePathVisualization();
-		}
-	}*/
 }
 
 // Calculates window dimensions for a given scale factor.
@@ -377,13 +348,10 @@ void Simulation::Draw()
 		DrawSimulationLayout();
 	}
 
-
-	// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
-
-	/*if (currentState == SimulationState::EditMode)
+	if (currentState == SimulationState::EditMode)
 	{
 		DrawEditModeUI();
-	}*/
+	}
 
 	rlImGuiEnd();
 	EndDrawing();
@@ -1390,73 +1358,46 @@ void Simulation::Run()
 		Draw();
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
-
-
-/*
-// Toggle edit mode on and off
+ 
 void Simulation::ToggleEditMode()
 {
-    if (currentState == SimulationState::Running) {
-        currentState = SimulationState::EditMode;
-        editMode->Toggle();
-        AddConsoleMessage("Entered Edit Mode - Modify navigation grid\n");
-    } else if (currentState == SimulationState::EditMode) {
-        currentState = SimulationState::Running;
-        editMode->Toggle();
-        AddConsoleMessage("Exited Edit Mode\n");
-    }
+	if (currentState == SimulationState::Running)
+	{
+		currentState = SimulationState::EditMode;
+		editMode->Toggle();
+	}
+	else if (currentState == SimulationState::EditMode)
+	{
+		currentState = SimulationState::Running;
+		editMode->Toggle();
+	}
 }
 
-// Toggle path visualization
 void Simulation::TogglePathVisualization()
 {
-    showPaths = !showPaths;
-    world->SetShowDebugPaths(showPaths);
-    
-    if (showPaths) {
-        AddConsoleMessage("Path visualization enabled\n");
-    } else {
-        AddConsoleMessage("Path visualization disabled\n");
-        world->ClearDebugPaths();
-    }
+	showPaths = !showPaths;
+
+	if (world)
+	{
+		world->SetShowDebugPaths(showPaths);
+	}
 }
 
-// Callback when navigation grid is modified
 void Simulation::OnNavigationChanged()
 {
-    // Recalculate paths for all entities
-    world->RecalculateAllPaths();
-    AddConsoleMessage("Navigation updated - Paths recalculated\n");
+	if (world)
+	{
+		world->RecalculateAllPaths();
+	}
 }
-
-
 
 void Simulation::DrawEditModeUI()
 {
-	if (currentState != SimulationState::EditMode) {
-		return;
+	if (editMode)
+	{
+		editMode->Draw();
 	}
 
-	// The EditMode class has its own UI rendering
-	editMode->Draw();
-
-	// Handle keyboard shortcuts
-	if (IsKeyPressed(KEY_ESCAPE)) {
-		ToggleEditMode();
-	}
+	DrawRectangle(0, 0, GetScreenWidth(), 30, { 0, 0, 0, 180 });
+	DrawText("EDIT MODE: Press E to exit, 1 = Add Wall, 2 = Remove Wall, P = Toggle Path Visualization", 10, 10, 20, WHITE);
 }
-
-*/

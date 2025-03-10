@@ -29,6 +29,17 @@ struct SheepPoopInstance
 	static constexpr float maxLifetime = 10.0f;
 };
 
+struct DebugPath
+{
+	Color color;
+
+	float timeToLive;
+
+	std::vector<Vector2> points;
+
+	static constexpr float defaultTimeToLive = 2.0f; 
+};
+
 struct BloodSplatterInstance
 {
 	Vector2 position;
@@ -59,10 +70,27 @@ public:
 	void CreateSheep(Vector2 position);
 	void CreateWolf(Vector2 position);
 
+	void AddDebugPath(const std::vector<Vector2>& path, Color color);
+	void UpdateDebugPaths(float deltaTime);
+	void RecalculateAllPaths();
+	void ClearDebugPaths();
+
 	bool IsSheepPoopNearby(Vector2 position, float radius) const;
 	bool IsTileWalkable(const Vector2& gridPosition) const;
 	bool IsAdjacentToGrass(Vector2 position) const;
 	bool IsCellOccupied(Vector2 position) const;
+
+
+	Vector2 WorldToGrid(const Vector2& worldPos) const;
+	Vector2 GridToWorld(const Vector2& gridPos) const;
+
+
+	void SetShowDebugPaths(bool show) { showDebugPaths = show; }
+
+	bool AreDebugPathsShown() const { return showDebugPaths; }
+
+
+	std::vector<Vector2> FindPath(const Vector2& start, const Vector2& end);
 
 
 	const std::vector<std::unique_ptr<WolfStateMachine>>& GetWolves() const { return wolves; }
@@ -72,6 +100,8 @@ public:
 	std::vector<Vector2> GetNeighboringCells(Vector2 position) const;
 
 	Simulation* GetSimulation() const { return simulation; }
+
+	NavigationGrid* GetNavigationGrid() const { return navigationGrid.get(); }
 
 	float GetMaxY() const { return static_cast<float>(height * cellSize); }
 	float GetMaxX() const { return static_cast<float>(width * cellSize); }
@@ -91,6 +121,11 @@ private:
 	float minY = 0.0f;
 	float cellSize;
 	float scaleFactor;
+
+	bool showDebugPaths = false;
+
+
+	std::vector<DebugPath> debugPaths;
 
 
 	std::vector<SheepPoopInstance> sheepPoopInstances;

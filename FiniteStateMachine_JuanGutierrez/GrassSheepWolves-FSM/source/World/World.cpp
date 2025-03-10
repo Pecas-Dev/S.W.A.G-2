@@ -2,6 +2,7 @@
 #include <Entities/Grass/GrassStateMachine.h>
 #include <Entities/Sheep/SheepStateMachine.h>
 #include <Entities/Wolf/WolfStateMachine.h>
+#include <Utility/PathFinding.h>
 #include <Utility/SimulationConfig.h>
 #include <Utility/ValueConfig.h>
 #include <World/World.h>
@@ -82,6 +83,9 @@ void World::Update(float deltaTime)
 	// Update blood splatter instances.
 	UpdateBloodSplatters(deltaTime);
 
+	// Update debug paths.
+	UpdateDebugPaths(deltaTime);
+
 	// Update and remove dead grass.
 	for (auto it = grasses.begin(); it != grasses.end();)
 	{
@@ -146,9 +150,52 @@ void World::Update(float deltaTime)
 // Renders all grass entities in the world.
 void World::Draw()
 {
-	if (navigationGrid) 
+	if (navigationGrid)
 	{
 		navigationGrid->Draw(this);
+	}
+
+	if (showDebugPaths)
+	{
+		PathFinding pathVisualization(this);
+
+		for (const auto& debugPath : debugPaths)
+		{
+			pathVisualization.DebugDrawPath(debugPath.points, debugPath.color);
+		}
+
+		/*for (const auto& debugPath : debugPaths)
+		{
+			float scaledCellSize = cellSize;
+
+			for (size_t i = 0; i < debugPath.points.size() - 1; i++)
+			{
+				Vector2 start =
+				{
+					debugPath.points[i].x * scaledCellSize + scaledCellSize / 2,
+					debugPath.points[i].y * scaledCellSize + scaledCellSize / 2 + minY
+				};
+
+				Vector2 end =
+				{
+					debugPath.points[i + 1].x * scaledCellSize + scaledCellSize / 2,
+					debugPath.points[i + 1].y * scaledCellSize + scaledCellSize / 2 + minY
+				};
+
+				DrawLineEx(start, end, 2.0f, debugPath.color);
+			}
+
+			for (const auto& point : debugPath.points)
+			{
+				Vector2 pos =
+				{
+					point.x * scaledCellSize + scaledCellSize / 2,
+					point.y * scaledCellSize + scaledCellSize / 2 + minY
+				};
+
+				DrawCircleV(pos, 3.0f, debugPath.color);
+			}
+		}*/
 	}
 
 	for (const auto& grass : grasses)
@@ -280,7 +327,7 @@ void World::SpreadSeeds(const Vector2& position)
 // Creates and initializes a new grass entity at the specified position.
 void World::CreateGrass(Vector2 position)
 {
-	if (scaleFactor <= 0.5f) 
+	if (scaleFactor <= 0.5f)
 	{
 		float minGridY = minY / (cellSize * scaleFactor);
 
@@ -316,7 +363,7 @@ void World::CreateSheep(Vector2 position)
 	float maxX = static_cast<float>(GetScreenWidth() * 3.0f / 4.0f - sheepSize - rightMargin);
 	float maxY = static_cast<float>(GetScreenHeight() * 2.0f / 3.0f - sheepSize - bottomMargin);
 
-	if (scaleFactor <= 0.5f && position.y < minimumY) 
+	if (scaleFactor <= 0.5f && position.y < minimumY)
 	{
 		position.y = minimumY;
 	}
@@ -414,7 +461,7 @@ bool World::IsSheepPoopNearby(Vector2 position, float radius) const
 	{
 		Vector2 poopPosition = sheepPoop.position;
 
-		if (scaleFactor <= 0.5f && poopPosition.y < _minY) 
+		if (scaleFactor <= 0.5f && poopPosition.y < _minY)
 		{
 			poopPosition.y = _minY;
 		}
@@ -473,3 +520,101 @@ bool World::IsTileWalkable(const Vector2& gridPosition) const
 {
 	return navigationGrid ? navigationGrid->IsTileWalkable(gridPosition) : true;
 }
+
+void World::RecalculateAllPaths()
+{
+	ClearDebugPaths();
+}
+
+void World::AddDebugPath(const std::vector<Vector2>& path, Color color)
+{
+	if (path.empty()) return;
+
+	DebugPath debugPath;
+	debugPath.points = path;
+	debugPath.color = color;
+	debugPath.timeToLive = DebugPath::defaultTimeToLive;
+
+	debugPaths.push_back(debugPath);
+}
+
+void World::UpdateDebugPaths(float deltaTime)
+{
+	for (auto it = debugPaths.begin(); it != debugPaths.end();)
+	{
+		it->timeToLive -= deltaTime;
+
+		if (it->timeToLive <= 0)
+		{
+			it = debugPaths.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+
+void World::ClearDebugPaths()
+{
+	debugPaths.clear();
+}
+
+Vector2 World::WorldToGrid(const Vector2& worldPos) const
+{
+	float adjustedY = worldPos.y - minY;
+	int gridX = static_cast<int>(worldPos.x / cellSize);
+	int gridY = static_cast<int>(adjustedY / cellSize);
+
+	return { static_cast<float>(gridX), static_cast<float>(gridY) };
+}
+
+Vector2 World::GridToWorld(const Vector2& gridPos) const
+{
+	float worldX = gridPos.x * cellSize;
+	float worldY = gridPos.y * cellSize + minY;
+
+	return { worldX, worldY };
+}
+
+std::vector<Vector2> World::FindPath(const Vector2& start, const Vector2& end)
+{
+	// Create a PathFinding instance
+	PathFinding pathFinder(this);
+
+	// Find path using A*
+	return pathFinder.FindPath(start, end);
+}
+
+/*void World::RecalculateAllPaths()
+{
+	// For now, this is a placeholder. We'll implement this fully
+	// when we integrate pathfinding into the entities.
+
+	// The idea is to go through all entities that use pathfinding
+	// and have them recalculate their paths if they're currently following one
+
+	// Example (to be implemented later):
+	
+	for (auto& sheep : sheeps) {
+		if (sheep->IsFollowingPath()) {
+			Vector2 target = sheep->GetPathTarget();
+			Vector2 start = WorldToGrid(sheep->GetPosition());
+			std::vector<Vector2> path = FindPath(start, target);
+			sheep->SetCurrentPath(path, target);
+		}
+	}
+
+	for (auto& wolf : wolves) {
+		if (wolf->IsFollowingPath()) {
+			Vector2 target = wolf->GetPathTarget();
+			Vector2 start = WorldToGrid(wolf->GetPosition());
+			std::vector<Vector2> path = FindPath(start, target);
+			wolf->SetCurrentPath(path, target);
+		}
+	}
+	
+
+	// Clear any debug paths to update visualization
+	ClearDebugPaths();
+}*/

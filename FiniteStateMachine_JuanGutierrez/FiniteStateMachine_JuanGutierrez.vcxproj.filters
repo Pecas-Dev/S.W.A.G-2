@@ -87,7 +87,7 @@
     <ClCompile Include="GrassSheepWolves-FSM\source\World\NavigationGrid.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="GrassSheepWolves-FSM\Dear Claude\EditMode.cpp">
+    <ClCompile Include="GrassSheepWolves-FSM\source\Simulation\EditMode.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
     <ClCompile Include="GrassSheepWolves-FSM\Dear Claude\ModifiedWorld.cpp">
@@ -191,7 +191,7 @@
     <ClInclude Include="GrassSheepWolves-FSM\include\World\NavigationGrid.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="GrassSheepWolves-FSM\Dear Claude\EditMode.h">
+    <ClInclude Include="GrassSheepWolves-FSM\include\Simulation\EditMode.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="GrassSheepWolves-FSM\Dear Claude\ModifiedWorld.h">

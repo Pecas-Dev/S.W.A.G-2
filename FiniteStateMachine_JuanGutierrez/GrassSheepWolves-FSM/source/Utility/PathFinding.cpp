@@ -210,7 +210,10 @@ std::vector<Vector2> PathFinding::ReconstructPath(PathNode* endNode)
 // Visualizes a path for debugging purposes.
 void PathFinding::DebugDrawPath(const std::vector<Vector2>& path, Color color)
 {
-	if (path.empty()) return;
+	if (path.empty()) 
+	{
+		return;
+	}
 
 	float scaleFactor = world->GetScaleFactor();
 	float cellSize = ValueConfig::World::CellSize * scaleFactor;

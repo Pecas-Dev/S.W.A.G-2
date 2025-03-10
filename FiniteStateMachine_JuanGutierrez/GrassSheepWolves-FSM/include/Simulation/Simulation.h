@@ -1,13 +1,7 @@
 #pragma once
 
 #include <Utility/SimulationConfig.h>
-
-
-// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
-
-/*#include <Simulation/EditMode.h>*/
-
-
+#include <Simulation/EditMode.h>
 #include <Utility/ValueConfig.h>
 #include <World/World.h>
 
@@ -34,7 +28,6 @@ public:
 	{
 		Setup,
 		Running,
-
 		EditMode
 	};
 
@@ -54,23 +47,14 @@ public:
 
 	void AddConsoleMessage(const std::string& message) { consoleMessages.push_back(message); }
 
-	bool ShouldShowDetectionRadii() const { return showDetectionRadii; }
-
-
-
-	// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
-
-	/*bool ShouldShowPaths() const { return showPaths; }
-
-	// Edit mode methods
-	void ToggleEditMode();
 	void TogglePathVisualization();
+	void OnNavigationChanged();
+	void ToggleEditMode();
+
+
 	bool IsInEditMode() const { return currentState == SimulationState::EditMode; }
 
-	// Path recalculation callback
-	void OnNavigationChanged();*/
-
-
+	bool ShouldShowDetectionRadii() const { return showDetectionRadii; }
 
 private:
 	void Initialize();
@@ -86,23 +70,18 @@ private:
 	void RenderSheepSettings();
 	void RenderWolfSettings();
 
+	void CenterWindow(int width, int height);
 	void RenderSimulationInViewport();
 	void UpdateValidScalingOptions();
 	void DrawEntityStatusWindow();
 	void DrawSimulationLayout();
 	void DrawConsoleWindow();
 	void DrawLegendPanel();
+	void DrawEditModeUI();
 	void DrawTabBar();
 
 
-	// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
-
-	/*void DrawEditModeUI();*/
-
-
-
 	void CalculateWindowDimensions(float scaleFactor, int& outWidth, int& outHeight) const;
-	void CenterWindow(int width, int height);
 
 
 	float GetHighestValidScaleFactor() const;
@@ -119,8 +98,9 @@ private:
 	SimulationConfig config;
 
 
-	int screenWidth;
 	int screenHeight;
+	int screenWidth;
+
 
 	int initialGrassCount;
 	int initialSheepCount;
@@ -131,13 +111,14 @@ private:
 	int _monitorWidth;
 	int _monitorHeight;
 
-	float cellSize;
 	float screenScaleFactor = 1.0f;
+	float cellSize;
 
-	bool showEntityStatus = true;
 	bool showDetectionRadii = false;
+	bool showEntityStatus = true;
 	bool pendingResize = false;
 	bool scaleOptionEnabled[5];
+	bool showPaths = false;
 
 	const char* scaleOptions[5] = { "0.5x", "0.75x", "1x", "1.25x", "1.5x" };
 
@@ -148,14 +129,7 @@ private:
 
 	std::unique_ptr<World> world;
 
-
-	// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
-
-	/*bool showPaths = false;           // New flag for path visualization
-	std::unique_ptr<EditMode> editMode;    // New edit mode object*/
-
-
-
+	std::unique_ptr<EditMode> editMode;    
 
 	std::vector<std::string> consoleMessages;
 };
