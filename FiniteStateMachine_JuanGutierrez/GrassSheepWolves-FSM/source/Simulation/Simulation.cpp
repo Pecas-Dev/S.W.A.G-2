@@ -163,6 +163,11 @@ void Simulation::Update()
 		ToggleEditMode();
 	}
 
+	if (IsKeyPressed(KEY_Q) && currentState == SimulationState::EditMode)
+	{
+		ToggleEditMode();
+	}
+
 	if (IsKeyPressed(KEY_P))
 	{
 		TogglePathVisualization();
@@ -338,16 +343,15 @@ void Simulation::Draw()
 	{
 		DrawSetupUI();
 	}
-	else if (currentState == SimulationState::Running && world)
+	else if ((currentState == SimulationState::Running || currentState == SimulationState::EditMode) && world)
 	{
 		world->Draw();
-
 		DrawSimulationLayout();
-	}
 
-	if (currentState == SimulationState::EditMode && editMode)
-	{
-		DrawEditModeUI();
+		if (currentState == SimulationState::EditMode && editMode)
+		{
+			DrawEditModeUI();
+		}
 	}
 
 	rlImGuiEnd();
@@ -671,7 +675,7 @@ void Simulation::DrawSetupUI()
 	ImGui::PopStyleColor(3);
 
 	ImGui::End();
-	}
+}
 
 // Renders the grass settings UI for configuring grass entity parameters.
 void Simulation::RenderGrassSettings()
@@ -798,7 +802,7 @@ void Simulation::RenderWolfSettings()
 	ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.4f, 0.0f, 0.0f, 0.5f));
 
 	ImGui::Text("Hunger & Stamina:");
-	
+
 
 	if (screenScaleFactor <= 0.5f)
 	{
@@ -1082,11 +1086,11 @@ void Simulation::DrawLegendPanel()
 
 		ImGui::Text("Grass States:");
 
-		ImGui::ColorButton("##SeedsPlanted", ImVec4(0.0f, 1.0f, 0.4f, 1.0f), 0, ImVec2(20, 20)); 
+		ImGui::ColorButton("##SeedsPlanted", ImVec4(0.0f, 1.0f, 0.4f, 1.0f), 0, ImVec2(20, 20));
 		ImGui::SameLine();
 		ImGui::Text("Seeds Planted/Growing");
 
-		ImGui::ColorButton("##FullyGrown", ImVec4(0.0f, 0.39f, 0.0f, 1.0f), 0, ImVec2(20, 20)); 
+		ImGui::ColorButton("##FullyGrown", ImVec4(0.0f, 0.39f, 0.0f, 1.0f), 0, ImVec2(20, 20));
 		ImGui::SameLine();
 		ImGui::Text("Fully Grown");
 
@@ -1102,23 +1106,23 @@ void Simulation::DrawLegendPanel()
 		ImGui::Separator();
 		ImGui::Text("Sheep States:");
 
-		ImGui::ColorButton("##WanderingAlone", ImVec4(0.53f, 0.81f, 0.98f, 1.0f), 0, ImVec2(20, 20)); 
+		ImGui::ColorButton("##WanderingAlone", ImVec4(0.53f, 0.81f, 0.98f, 1.0f), 0, ImVec2(20, 20));
 		ImGui::SameLine();
 		ImGui::Text("Wandering Alone");
 
-		ImGui::ColorButton("##WanderingInGroup", ImVec4(0.1f, 0.1f, 0.6f, 1.0f), 0, ImVec2(20, 20)); 
+		ImGui::ColorButton("##WanderingInGroup", ImVec4(0.1f, 0.1f, 0.6f, 1.0f), 0, ImVec2(20, 20));
 		ImGui::SameLine();
 		ImGui::Text("Wandering in Group");
 
-		ImGui::ColorButton("##SheepEating", ImVec4(0.4f, 0.2f, 0.6f, 1.0f), 0, ImVec2(20, 20)); 
+		ImGui::ColorButton("##SheepEating", ImVec4(0.4f, 0.2f, 0.6f, 1.0f), 0, ImVec2(20, 20));
 		ImGui::SameLine();
 		ImGui::Text("Eating");
 
-		ImGui::ColorButton("##Defecating", ImVec4(1.0f, 0.5f, 0.0f, 1.0f), 0, ImVec2(20, 20)); 
+		ImGui::ColorButton("##Defecating", ImVec4(1.0f, 0.5f, 0.0f, 1.0f), 0, ImVec2(20, 20));
 		ImGui::SameLine();
 		ImGui::Text("Defecating");
 
-		ImGui::ColorButton("##RunningAway", ImVec4(1.0f, 0.0f, 0.2f, 1.0f), 0, ImVec2(20, 20)); 
+		ImGui::ColorButton("##RunningAway", ImVec4(1.0f, 0.0f, 0.2f, 1.0f), 0, ImVec2(20, 20));
 		ImGui::SameLine();
 		ImGui::Text("Running Away");
 
@@ -1136,30 +1140,33 @@ void Simulation::DrawLegendPanel()
 		ImGui::Separator();
 		ImGui::Text("Wolf States:");
 
-		ImGui::ColorButton("##Sleeping", ImVec4(0.0f, 0.0f, 0.0f, 1.0f), 0, ImVec2(20, 20)); 
+		ImGui::ColorButton("##Sleeping", ImVec4(0.0f, 0.0f, 0.0f, 1.0f), 0, ImVec2(20, 20));
 		ImGui::SameLine();
 		ImGui::Text("Sleeping");
 
-		ImGui::ColorButton("##Roaming", ImVec4(1.0f, 1.0f, 0.0f, 1.0f), 0, ImVec2(20, 20)); 
+		ImGui::ColorButton("##Roaming", ImVec4(1.0f, 1.0f, 0.0f, 1.0f), 0, ImVec2(20, 20));
 		ImGui::SameLine();
 		ImGui::Text("Roaming");
 
-		ImGui::ColorButton("##Hunting", ImVec4(0.5f, 0.0f, 0.0f, 1.0f), 0, ImVec2(20, 20)); 
+		ImGui::ColorButton("##Hunting", ImVec4(0.5f, 0.0f, 0.0f, 1.0f), 0, ImVec2(20, 20));
 		ImGui::SameLine();
 		ImGui::Text("Hunting");
 
-		ImGui::ColorButton("##WolfEating", ImVec4(0.016f, 0.4f, 0.392f, 1.0f), 0, ImVec2(20, 20)); 
+		ImGui::ColorButton("##WolfEating", ImVec4(0.016f, 0.4f, 0.392f, 1.0f), 0, ImVec2(20, 20));
 		ImGui::SameLine();
 		ImGui::Text("Eating");
 
-		ImGui::ColorButton("##ReturnToDen", ImVec4(0.5f, 0.75f, 0.2f, 1.0f), 0, ImVec2(20, 20)); 
+		ImGui::ColorButton("##ReturnToDen", ImVec4(0.5f, 0.75f, 0.2f, 1.0f), 0, ImVec2(20, 20));
 		ImGui::SameLine();
 		ImGui::Text("Returning to Den");
 
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 5; i++)
 		{
 			ImGui::Spacing();
 		}
+
+		ImGui::Separator();
+		ImGui::Spacing();
 
 		ImGui::Checkbox("Show Detection Radii (R)", &showDetectionRadii);
 
@@ -1170,8 +1177,11 @@ void Simulation::DrawLegendPanel()
 			world->SetShowDebugPaths(showPaths);
 		}
 
+		ImGui::Spacing();
+
 		ImGui::Text("Press 'R' to toggle Detection Radii");
-		ImGui::Text("Press 'E' to toggle Edit Mode");
+		ImGui::Text("Press 'E' to enter Edit Mode");
+		ImGui::Text("Press 'Q' to exit Edit Mode");
 		ImGui::Text("Press 'P' to toggle Path Visualization");
 	}
 	ImGui::End();
@@ -1196,60 +1206,6 @@ void Simulation::DrawTabBar()
 
 		ImGui::EndTabBar();
 	}
-
-
-
-	// MY DEAR CLAUDE: COMMENTED OUT SO THAT WE CAN IMPLEMENT THINGS STEP BY STEP! (;
-
-	/*if (ImGui::BeginTabBar("SimulationTabs", ImGuiTabBarFlags_None))
-	{
-		if (ImGui::BeginTabItem("Main"))
-		{
-			ImGui::Checkbox("Show Entity Status", &showEntityStatus);
-			ImGui::SameLine();
-			ImGui::Checkbox("Show Detection Radii", &showDetectionRadii);
-			ImGui::SameLine();
-
-			// Path visualization toggle
-			bool pathsShown = showPaths;
-			if (ImGui::Checkbox("Show Paths (P)", &pathsShown)) {
-				if (pathsShown != showPaths) {
-					TogglePathVisualization();
-				}
-			}
-
-			// Edit mode toggle
-			bool editModeActive = (currentState == SimulationState::EditMode);
-			if (ImGui::Checkbox("Edit Mode (E)", &editModeActive)) {
-				if (editModeActive != (currentState == SimulationState::EditMode)) {
-					ToggleEditMode();
-				}
-			}
-
-			ImGui::EndTabItem();
-		}
-
-		if (ImGui::BeginTabItem("Grass"))
-		{
-			RenderGrassSettings();
-			ImGui::EndTabItem();
-		}
-
-		if (ImGui::BeginTabItem("Sheep"))
-		{
-			RenderSheepSettings();
-			ImGui::EndTabItem();
-		}
-
-		if (ImGui::BeginTabItem("Wolf"))
-		{
-			RenderWolfSettings();
-			ImGui::EndTabItem();
-		}
-
-		ImGui::EndTabBar();
-	}*/
-
 }
 
 // Draws the console window with captured printf output.
@@ -1369,7 +1325,7 @@ void Simulation::Run()
 		Draw();
 	}
 }
- 
+
 void Simulation::ToggleEditMode()
 {
 	if (!editMode || !world)
@@ -1381,11 +1337,13 @@ void Simulation::ToggleEditMode()
 	{
 		currentState = SimulationState::EditMode;
 		editMode->Toggle();
+		AddConsoleMessage("Entered Edit Mode. Use E to exit.");
 	}
 	else if (currentState == SimulationState::EditMode)
 	{
 		currentState = SimulationState::Running;
 		editMode->Toggle();
+		AddConsoleMessage("Exited Edit Mode.");
 	}
 }
 
@@ -1404,6 +1362,7 @@ void Simulation::OnNavigationChanged()
 	if (world)
 	{
 		world->RecalculateAllPaths();
+		AddConsoleMessage("Navigation grid modified. Paths recalculated.");
 	}
 }
 
@@ -1414,6 +1373,9 @@ void Simulation::DrawEditModeUI()
 		editMode->Draw();
 	}
 
-	DrawRectangle(0, 0, GetScreenWidth(), 30, { 0, 0, 0, 180 });
-	DrawText("EDIT MODE: Press E to exit, 1 = Add Wall, 2 = Remove Wall, P = Toggle Path Visualization", 10, 10, 20, WHITE);
+	int textSize = static_cast<int>(20 * screenScaleFactor);
+	int rectHeight = textSize + 20;
+
+	DrawRectangle(0, 20, GetScreenWidth(), rectHeight, { 0, 0, 0, 125 });
+	DrawText("EDIT MODE: Press Q to exit, 1 = Add Wall, 2 = Remove Wall, P = Toggle Path Visualization", 10, (rectHeight + 35) / 2 - textSize / 2, textSize, WHITE);
 }
